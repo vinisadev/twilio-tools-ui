@@ -19,6 +19,7 @@ import {
   BarChart3,
   Home,
   CreditCard,
+  Settings,
 } from 'lucide-react';
 
 interface NavigationItem {
@@ -57,6 +58,13 @@ const navigationItems: NavigationItem[] = [
         icon: BarChart3,
         href: '/voice/queues',
         description: 'Call queue management',
+      },
+      {
+        id: 'voice-settings',
+        label: 'Voice Settings',
+        icon: Settings,
+        href: '/voice/settings',
+        description: 'Configure voice recording and authentication settings',
       },
     ],
   },
