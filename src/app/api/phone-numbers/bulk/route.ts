@@ -33,7 +33,7 @@ export async function POST(request: NextRequest) {
 
     for (const phoneNumber of phoneNumbers) {
       try {
-        const purchaseOptions: any = {
+        const purchaseOptions: Record<string, string> = {
           phoneNumber,
         };
 
@@ -49,12 +49,19 @@ export async function POST(request: NextRequest) {
           sid: purchasedNumber.sid,
           friendlyName: purchasedNumber.friendlyName,
         });
-      } catch (error: any) {
+      } catch (error: unknown) {
+        const errorMessage = error && typeof error === 'object' && 'message' in error 
+          ? (error as { message: string }).message 
+          : 'Failed to purchase number';
+        const errorCode = error && typeof error === 'object' && 'code' in error 
+          ? (error as { code: string | number }).code 
+          : undefined;
+        
         errors.push({
           phoneNumber,
           success: false,
-          error: error.message || 'Failed to purchase number',
-          code: error.code,
+          error: errorMessage,
+          code: errorCode,
         });
       }
     }
@@ -70,10 +77,10 @@ export async function POST(request: NextRequest) {
         failed: errors.length,
       },
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error in bulk purchase:', error);
     
-    if (error.code === 20003) {
+    if (error && typeof error === 'object' && 'code' in error && error.code === 20003) {
       return NextResponse.json(
         { error: 'Invalid Account SID or Auth Token' },
         { status: 401 }
@@ -125,12 +132,19 @@ export async function DELETE(request: NextRequest) {
           phoneNumberSid,
           success: true,
         });
-      } catch (error: any) {
+      } catch (error: unknown) {
+        const errorMessage = error && typeof error === 'object' && 'message' in error 
+          ? (error as { message: string }).message 
+          : 'Failed to release number';
+        const errorCode = error && typeof error === 'object' && 'code' in error 
+          ? (error as { code: string | number }).code 
+          : undefined;
+        
         errors.push({
           phoneNumberSid,
           success: false,
-          error: error.message || 'Failed to release number',
-          code: error.code,
+          error: errorMessage,
+          code: errorCode,
         });
       }
     }
@@ -146,10 +160,10 @@ export async function DELETE(request: NextRequest) {
         failed: errors.length,
       },
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error in bulk release:', error);
     
-    if (error.code === 20003) {
+    if (error && typeof error === 'object' && 'code' in error && error.code === 20003) {
       return NextResponse.json(
         { error: 'Invalid Account SID or Auth Token' },
         { status: 401 }

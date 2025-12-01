@@ -32,10 +32,10 @@ export async function GET(request: NextRequest) {
       success: true,
       queues: queueData,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error fetching queues:', error);
     
-    if (error.code === 20003) {
+    if (error && typeof error === 'object' && 'code' in error && error.code === 20003) {
       return NextResponse.json(
         { error: 'Invalid Account SID or Auth Token' },
         { status: 401 }
@@ -63,7 +63,7 @@ export async function POST(request: NextRequest) {
 
     const client = twilio(accountSid, authToken);
     
-    const createOptions: any = {
+    const createOptions: Record<string, string | number> = {
       friendlyName,
     };
 
@@ -86,10 +86,10 @@ export async function POST(request: NextRequest) {
         dateUpdated: queue.dateUpdated,
       },
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error creating queue:', error);
     
-    if (error.code === 20003) {
+    if (error && typeof error === 'object' && 'code' in error && error.code === 20003) {
       return NextResponse.json(
         { error: 'Invalid Account SID or Auth Token' },
         { status: 401 }

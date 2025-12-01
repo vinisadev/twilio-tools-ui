@@ -34,21 +34,23 @@ export async function GET(
       success: true,
       members: memberData,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error fetching queue members:', error);
     
-    if (error.code === 20003) {
-      return NextResponse.json(
-        { error: 'Invalid Account SID or Auth Token' },
-        { status: 401 }
-      );
-    }
-    
-    if (error.code === 20404) {
-      return NextResponse.json(
-        { error: 'Queue not found' },
-        { status: 404 }
-      );
+    if (error && typeof error === 'object' && 'code' in error) {
+      if (error.code === 20003) {
+        return NextResponse.json(
+          { error: 'Invalid Account SID or Auth Token' },
+          { status: 401 }
+        );
+      }
+      
+      if (error.code === 20404) {
+        return NextResponse.json(
+          { error: 'Queue not found' },
+          { status: 404 }
+        );
+      }
     }
 
     return NextResponse.json(

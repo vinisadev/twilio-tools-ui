@@ -36,22 +36,24 @@ export async function POST(request: NextRequest) {
         type: account.type,
       },
     });
-  } catch (error: any) {
-    console.error('twilio validation error: ', error);
-
+  } catch (error: unknown) {
+    console.error('Twilio validation error:', error);
+    
     // Handle specific Twilio errors
-    if (error.code === 20003) {
-      return NextResponse.json(
-        { error: 'Invalid Account SID or Auth Token' },
-        { status: 401 }
-      );
-    }
-
-    if (error.code === 20404) {
-      return NextResponse.json(
-        { error: 'Account not found' },
-        { status: 404 }
-      );
+    if (error && typeof error === 'object' && 'code' in error) {
+      if (error.code === 20003) {
+        return NextResponse.json(
+          { error: 'Invalid Account SID or Auth Token' },
+          { status: 401 }
+        );
+      }
+      
+      if (error.code === 20404) {
+        return NextResponse.json(
+          { error: 'Account not found' },
+          { status: 404 }
+        );
+      }
     }
 
     return NextResponse.json(

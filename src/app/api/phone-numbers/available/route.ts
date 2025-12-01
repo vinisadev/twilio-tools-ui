@@ -23,7 +23,7 @@ export async function GET(request: NextRequest) {
 
     const client = twilio(accountSid, authToken);
     
-    const searchOptions: any = {
+    const searchOptions: Record<string, string | number | boolean> = {
       limit,
     };
 
@@ -64,10 +64,10 @@ export async function GET(request: NextRequest) {
         limit,
       },
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error searching available phone numbers:', error);
     
-    if (error.code === 20003) {
+    if (error && typeof error === 'object' && 'code' in error && error.code === 20003) {
       return NextResponse.json(
         { error: 'Invalid Account SID or Auth Token' },
         { status: 401 }

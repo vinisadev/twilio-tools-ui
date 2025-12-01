@@ -44,21 +44,23 @@ export async function GET(
         uri: phoneNumber.uri,
       },
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error fetching phone number:', error);
     
-    if (error.code === 20003) {
-      return NextResponse.json(
-        { error: 'Invalid Account SID or Auth Token' },
-        { status: 401 }
-      );
-    }
-    
-    if (error.code === 20404) {
-      return NextResponse.json(
-        { error: 'Phone number not found' },
-        { status: 404 }
-      );
+    if (error && typeof error === 'object' && 'code' in error) {
+      if (error.code === 20003) {
+        return NextResponse.json(
+          { error: 'Invalid Account SID or Auth Token' },
+          { status: 401 }
+        );
+      }
+      
+      if (error.code === 20404) {
+        return NextResponse.json(
+          { error: 'Phone number not found' },
+          { status: 404 }
+        );
+      }
     }
 
     return NextResponse.json(
@@ -86,7 +88,7 @@ export async function PUT(
 
     const client = twilio(accountSid, authToken);
     
-    const updateOptions: any = {};
+    const updateOptions: Record<string, string> = {};
     if (friendlyName) updateOptions.friendlyName = friendlyName;
     if (voiceUrl) updateOptions.voiceUrl = voiceUrl;
     if (smsUrl) updateOptions.smsUrl = smsUrl;
@@ -108,21 +110,23 @@ export async function PUT(
         dateUpdated: phoneNumber.dateUpdated,
       },
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error updating phone number:', error);
     
-    if (error.code === 20003) {
-      return NextResponse.json(
-        { error: 'Invalid Account SID or Auth Token' },
-        { status: 401 }
-      );
-    }
-    
-    if (error.code === 20404) {
-      return NextResponse.json(
-        { error: 'Phone number not found' },
-        { status: 404 }
-      );
+    if (error && typeof error === 'object' && 'code' in error) {
+      if (error.code === 20003) {
+        return NextResponse.json(
+          { error: 'Invalid Account SID or Auth Token' },
+          { status: 401 }
+        );
+      }
+      
+      if (error.code === 20404) {
+        return NextResponse.json(
+          { error: 'Phone number not found' },
+          { status: 404 }
+        );
+      }
     }
 
     return NextResponse.json(
@@ -157,21 +161,23 @@ export async function DELETE(
       success: true,
       message: 'Phone number released successfully',
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error releasing phone number:', error);
     
-    if (error.code === 20003) {
-      return NextResponse.json(
-        { error: 'Invalid Account SID or Auth Token' },
-        { status: 401 }
-      );
-    }
-    
-    if (error.code === 20404) {
-      return NextResponse.json(
-        { error: 'Phone number not found' },
-        { status: 404 }
-      );
+    if (error && typeof error === 'object' && 'code' in error) {
+      if (error.code === 20003) {
+        return NextResponse.json(
+          { error: 'Invalid Account SID or Auth Token' },
+          { status: 401 }
+        );
+      }
+      
+      if (error.code === 20404) {
+        return NextResponse.json(
+          { error: 'Phone number not found' },
+          { status: 404 }
+        );
+      }
     }
 
     return NextResponse.json(

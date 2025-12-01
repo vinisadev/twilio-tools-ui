@@ -46,21 +46,23 @@ export async function GET(
       },
       members: memberData,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error fetching queue:', error);
     
-    if (error.code === 20003) {
-      return NextResponse.json(
-        { error: 'Invalid Account SID or Auth Token' },
-        { status: 401 }
-      );
-    }
-    
-    if (error.code === 20404) {
-      return NextResponse.json(
-        { error: 'Queue not found' },
-        { status: 404 }
-      );
+    if (error && typeof error === 'object' && 'code' in error) {
+      if (error.code === 20003) {
+        return NextResponse.json(
+          { error: 'Invalid Account SID or Auth Token' },
+          { status: 401 }
+        );
+      }
+      
+      if (error.code === 20404) {
+        return NextResponse.json(
+          { error: 'Queue not found' },
+          { status: 404 }
+        );
+      }
     }
 
     return NextResponse.json(
@@ -88,7 +90,7 @@ export async function PUT(
 
     const client = twilio(accountSid, authToken);
     
-    const updateOptions: any = {};
+    const updateOptions: Record<string, string | number> = {};
     if (friendlyName) updateOptions.friendlyName = friendlyName;
     if (maxSize !== undefined && maxSize > 0) updateOptions.maxSize = parseInt(maxSize);
 
@@ -107,21 +109,23 @@ export async function PUT(
         dateUpdated: queue.dateUpdated,
       },
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error updating queue:', error);
     
-    if (error.code === 20003) {
-      return NextResponse.json(
-        { error: 'Invalid Account SID or Auth Token' },
-        { status: 401 }
-      );
-    }
-    
-    if (error.code === 20404) {
-      return NextResponse.json(
-        { error: 'Queue not found' },
-        { status: 404 }
-      );
+    if (error && typeof error === 'object' && 'code' in error) {
+      if (error.code === 20003) {
+        return NextResponse.json(
+          { error: 'Invalid Account SID or Auth Token' },
+          { status: 401 }
+        );
+      }
+      
+      if (error.code === 20404) {
+        return NextResponse.json(
+          { error: 'Queue not found' },
+          { status: 404 }
+        );
+      }
     }
 
     return NextResponse.json(
@@ -156,21 +160,23 @@ export async function DELETE(
       success: true,
       message: 'Queue deleted successfully',
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error deleting queue:', error);
     
-    if (error.code === 20003) {
-      return NextResponse.json(
-        { error: 'Invalid Account SID or Auth Token' },
-        { status: 401 }
-      );
-    }
-    
-    if (error.code === 20404) {
-      return NextResponse.json(
-        { error: 'Queue not found' },
-        { status: 404 }
-      );
+    if (error && typeof error === 'object' && 'code' in error) {
+      if (error.code === 20003) {
+        return NextResponse.json(
+          { error: 'Invalid Account SID or Auth Token' },
+          { status: 401 }
+        );
+      }
+      
+      if (error.code === 20404) {
+        return NextResponse.json(
+          { error: 'Queue not found' },
+          { status: 404 }
+        );
+      }
     }
 
     return NextResponse.json(
