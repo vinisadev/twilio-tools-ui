@@ -86,6 +86,7 @@ export default function TwilioValidationForm() {
         });
       }
     } catch (error) {
+      console.error('Error validating Twilio credentials:', error);
       setResult({
         success: false,
         message: 'Network error. Please check your connection and try again.',

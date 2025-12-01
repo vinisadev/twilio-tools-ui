@@ -1,6 +1,7 @@
 'use client';
 
 import { ReactNode } from 'react';
+import Link from 'next/link';
 import { useTwilioCredentials } from '@/contexts/TwilioCredentialsContext';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -29,7 +30,7 @@ export default function CredentialGuard({
             {fallbackMessage}
           </p>
           <Button asChild>
-            <a href="/">Go to Home Page</a>
+            <Link href="/">Go to Home Page</Link>
           </Button>
         </CardContent>
       </Card>

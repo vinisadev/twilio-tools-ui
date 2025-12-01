@@ -22,12 +22,11 @@ import {
   RefreshCw, 
   Users, 
   Clock, 
-  Phone,
   AlertCircle,
-  CheckCircle,
-  XCircle
+  CheckCircle
 } from 'lucide-react';
 import { useTwilioCredentials } from '@/contexts/TwilioCredentialsContext';
+import { useCallback } from 'react';
 
 const createQueueSchema = z.object({
   friendlyName: z.string().min(1, 'Queue name is required'),
@@ -95,7 +94,7 @@ export default function QueueManagement() {
     resolver: zodResolver(updateQueueSchema),
   });
 
-  const fetchQueues = async () => {
+  const fetchQueues = useCallback(async () => {
     if (!isCredentialsValid || !credentials) {
       setError('Please validate your Twilio credentials first');
       return;
@@ -114,11 +113,12 @@ export default function QueueManagement() {
         setError(data.error || 'Failed to fetch queues');
       }
     } catch (error) {
+      console.error('Error fetching queues:', error);
       setError('Network error. Please check your connection.');
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [isCredentialsValid, credentials]);
 
   const fetchQueueDetails = async (queueSid: string) => {
     if (!isCredentialsValid || !credentials) {
@@ -137,6 +137,7 @@ export default function QueueManagement() {
         setError(data.error || 'Failed to fetch queue details');
       }
     } catch (error) {
+      console.error('Error fetching queue details:', error);
       setError('Network error. Please check your connection.');
     }
   };
@@ -173,6 +174,7 @@ export default function QueueManagement() {
         setError(result.error || 'Failed to create queue');
       }
     } catch (error) {
+      console.error('Error creating queue:', error);
       setError('Network error. Please check your connection.');
     } finally {
       setIsCreating(false);
@@ -213,6 +215,7 @@ export default function QueueManagement() {
         setError(result.error || 'Failed to update queue');
       }
     } catch (error) {
+      console.error('Error updating queue:', error);
       setError('Network error. Please check your connection.');
     } finally {
       setIsUpdating(false);
@@ -246,6 +249,7 @@ export default function QueueManagement() {
         setError(result.error || 'Failed to delete queue');
       }
     } catch (error) {
+      console.error('Error deleting queue:', error);
       setError('Network error. Please check your connection.');
     } finally {
       setIsDeleting(false);
@@ -261,7 +265,7 @@ export default function QueueManagement() {
 
   useEffect(() => {
     fetchQueues();
-  }, []);
+  }, [fetchQueues]);
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleString();

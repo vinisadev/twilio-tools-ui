@@ -10,7 +10,7 @@ export default function Home() {
           </h1>
           <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
             Learn and explore Twilio APIs with interactive examples. Start by validating your 
-            Twilio credentials to unlock the full potential of Twilio's communication platform.
+            Twilio credentials to unlock the full potential of Twilio&apos;s communication platform.
           </p>
         </div>
 

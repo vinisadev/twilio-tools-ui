@@ -42,10 +42,10 @@ export async function GET(request: NextRequest) {
       success: true,
       phoneNumbers: phoneNumberData,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error fetching phone numbers:', error);
     
-    if (error.code === 20003) {
+    if (error && typeof error === 'object' && 'code' in error && error.code === 20003) {
       return NextResponse.json(
         { error: 'Invalid Account SID or Auth Token' },
         { status: 401 }
@@ -73,7 +73,7 @@ export async function POST(request: NextRequest) {
 
     const client = twilio(accountSid, authToken);
     
-    const purchaseOptions: any = {
+    const purchaseOptions: Record<string, string> = {
       phoneNumber,
     };
 
@@ -97,21 +97,23 @@ export async function POST(request: NextRequest) {
         dateCreated: purchasedNumber.dateCreated,
       },
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error purchasing phone number:', error);
     
-    if (error.code === 20003) {
-      return NextResponse.json(
-        { error: 'Invalid Account SID or Auth Token' },
-        { status: 401 }
-      );
-    }
-
-    if (error.code === 21211) {
-      return NextResponse.json(
-        { error: 'Phone number is not available for purchase' },
-        { status: 400 }
-      );
+    if (error && typeof error === 'object' && 'code' in error) {
+      if (error.code === 20003) {
+        return NextResponse.json(
+          { error: 'Invalid Account SID or Auth Token' },
+          { status: 401 }
+        );
+      }
+      
+      if (error.code === 21211) {
+        return NextResponse.json(
+          { error: 'Phone number is not available for purchase' },
+          { status: 400 }
+        );
+      }
     }
 
     return NextResponse.json(

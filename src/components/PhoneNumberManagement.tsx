@@ -12,27 +12,20 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { 
   Loader2, 
   Plus, 
-  Edit, 
   Trash2, 
-  Eye, 
   RefreshCw, 
-  Search,
-  Phone,
   AlertCircle,
   CheckCircle,
-  XCircle,
   Download,
-  Upload,
-  Filter,
-  Globe
+  Search
 } from 'lucide-react';
 import { useTwilioCredentials } from '@/contexts/TwilioCredentialsContext';
+import { useCallback } from 'react';
 
 const searchAvailableSchema = z.object({
   countryCode: z.string().min(1, 'Country code is required'),
@@ -109,7 +102,7 @@ export default function PhoneNumberManagement() {
     },
   });
 
-  const fetchPhoneNumbers = async () => {
+  const fetchPhoneNumbers = useCallback(async () => {
     if (!isCredentialsValid || !credentials) {
       setError('Please validate your Twilio credentials first');
       return;
@@ -128,11 +121,12 @@ export default function PhoneNumberManagement() {
         setError(data.error || 'Failed to fetch phone numbers');
       }
     } catch (error) {
+      console.error('Error fetching phone numbers:', error);
       setError('Network error. Please check your connection.');
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [isCredentialsValid, credentials]);
 
   const searchAvailableNumbers = async (data: SearchAvailableData) => {
     console.log('Search form submitted with data:', data);
@@ -172,6 +166,7 @@ export default function PhoneNumberManagement() {
         setError(result.error || 'Failed to search available numbers');
       }
     } catch (error) {
+      console.error('Error searching available numbers:', error);
       setError('Network error. Please check your connection.');
     } finally {
       setIsSearching(false);
@@ -206,6 +201,7 @@ export default function PhoneNumberManagement() {
         setError(result.error || 'Failed to release phone number');
       }
     } catch (error) {
+      console.error('Error releasing phone number:', error);
       setError('Network error. Please check your connection.');
     } finally {
       setIsReleasing(false);
@@ -253,6 +249,7 @@ export default function PhoneNumberManagement() {
         setError(result.error || 'Failed to bulk release phone numbers');
       }
     } catch (error) {
+      console.error('Error bulk releasing phone numbers:', error);
       setError('Network error. Please check your connection.');
     } finally {
       setIsBulkReleasing(false);
@@ -328,6 +325,7 @@ export default function PhoneNumberManagement() {
         setError(result.error || 'Failed to purchase selected phone numbers');
       }
     } catch (error) {
+      console.error('Error purchasing selected numbers:', error);
       setError('Network error. Please check your connection.');
     } finally {
       setIsBulkPurchasing(false);
@@ -336,7 +334,7 @@ export default function PhoneNumberManagement() {
 
   useEffect(() => {
     fetchPhoneNumbers();
-  }, []);
+  }, [fetchPhoneNumbers]);
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleString();
