@@ -18,6 +18,7 @@ import {
   Phone,
   BarChart3,
   Home,
+  CreditCard,
 } from 'lucide-react';
 
 interface NavigationItem {
@@ -58,6 +59,13 @@ const navigationItems: NavigationItem[] = [
         description: 'Call queue management',
       },
     ],
+  },
+  {
+    id: 'billing',
+    label: 'Billing',
+    icon: CreditCard,
+    href: '/billing',
+    description: 'Usage records, invoices, and billing management',
   }
 ];
 
