@@ -20,6 +20,7 @@ import {
   Home,
   CreditCard,
   Settings,
+  Shield,
 } from 'lucide-react';
 
 interface NavigationItem {
@@ -74,6 +75,13 @@ const navigationItems: NavigationItem[] = [
     icon: CreditCard,
     href: '/billing',
     description: 'Usage records, invoices, and billing management',
+  },
+  {
+    id: 'trust-hub',
+    label: 'Trust Hub',
+    icon: Shield,
+    href: '/trust-hub',
+    description: 'Compliance and trust management products',
   }
 ];
 
