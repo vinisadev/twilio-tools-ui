@@ -90,11 +90,12 @@ export async function PUT(
 
     const client = twilio(accountSid, authToken);
     
-    const updateOptions: Record<string, string | number> = {};
-    if (friendlyName) updateOptions.friendlyName = friendlyName;
-    if (maxSize !== undefined && maxSize > 0) updateOptions.maxSize = parseInt(maxSize);
+    const updateOptions = {
+      ...(friendlyName && { friendlyName }),
+      ...(maxSize !== undefined && maxSize > 0 && { maxSize: parseInt(maxSize) }),
+    };
 
-    const queue = await client.queues(queueSid).update(updateOptions);
+    const queue = await client.queues(queueSid).update(updateOptions as { friendlyName?: string; maxSize?: number });
 
     return NextResponse.json({
       success: true,

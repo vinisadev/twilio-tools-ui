@@ -45,7 +45,7 @@ export async function GET(request: NextRequest) {
       },
       locality: number.locality,
       region: number.region,
-      countryCode: number.countryCode,
+      countryCode: countryCode,
       lata: number.lata,
       rateCenter: number.rateCenter,
       latitude: number.latitude,

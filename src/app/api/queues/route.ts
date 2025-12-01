@@ -63,15 +63,12 @@ export async function POST(request: NextRequest) {
 
     const client = twilio(accountSid, authToken);
     
-    const createOptions: Record<string, string | number> = {
+    const createOptions = {
       friendlyName,
+      ...(maxSize && maxSize > 0 && { maxSize: parseInt(maxSize) }),
     };
 
-    if (maxSize && maxSize > 0) {
-      createOptions.maxSize = parseInt(maxSize);
-    }
-
-    const queue = await client.queues.create(createOptions);
+    const queue = await client.queues.create(createOptions as { friendlyName: string; maxSize?: number });
 
     return NextResponse.json({
       success: true,
