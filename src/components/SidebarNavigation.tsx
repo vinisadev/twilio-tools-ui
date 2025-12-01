@@ -67,6 +67,13 @@ const navigationItems: NavigationItem[] = [
     description: 'Get started with Twilio',
   },
   {
+    id: 'phone-numbers',
+    label: 'Phone Numbers',
+    icon: Phone,
+    href: '/phone-numbers',
+    description: 'Manage phone numbers and inventory',
+  },
+  {
     id: 'voice',
     label: 'Voice',
     icon: Phone,
