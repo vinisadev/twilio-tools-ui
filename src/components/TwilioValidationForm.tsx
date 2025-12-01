@@ -10,6 +10,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Loader2, CheckCircle, XCircle, Eye, EyeOff } from 'lucide-react';
+import { useTwilioCredentials } from '@/contexts/TwilioCredentialsContext';
 
 const validationSchema = z.object({
   accountSid: z
@@ -38,6 +39,7 @@ export default function TwilioValidationForm() {
   const [isLoading, setIsLoading] = useState(false);
   const [result, setResult] = useState<ValidationResult | null>(null);
   const [showAuthToken, setShowAuthToken] = useState(false);
+  const { credentials, setCredentials, isCredentialsValid } = useTwilioCredentials();
 
   const {
     register,
@@ -69,6 +71,14 @@ export default function TwilioValidationForm() {
           message: result.message,
           accountInfo: result.accountInfo,
         });
+        
+        // Store credentials in context
+        setCredentials({
+          accountSid: data.accountSid,
+          authToken: data.authToken,
+          isValid: true,
+          accountInfo: result.accountInfo,
+        });
       } else {
         setResult({
           success: false,
@@ -90,6 +100,12 @@ export default function TwilioValidationForm() {
     setResult(null);
   };
 
+  const handleClearCredentials = () => {
+    setCredentials(null);
+    setResult(null);
+    reset();
+  };
+
   return (
     <Card className="w-full max-w-md mx-auto">
       <CardHeader>
@@ -102,6 +118,28 @@ export default function TwilioValidationForm() {
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
+        {/* Current Credentials Status */}
+        {isCredentialsValid && credentials && (
+          <Alert className="border-green-500">
+            <CheckCircle className="h-4 w-4 text-green-500" />
+            <AlertDescription className="text-green-700">
+              <div className="space-y-1">
+                <p><strong>Connected to:</strong> {credentials.accountInfo?.friendlyName}</p>
+                <p><strong>Account SID:</strong> {credentials.accountSid}</p>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={handleClearCredentials}
+                  className="mt-2"
+                >
+                  Clear Credentials
+                </Button>
+              </div>
+            </AlertDescription>
+          </Alert>
+        )}
+
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="accountSid">Account SID</Label>
